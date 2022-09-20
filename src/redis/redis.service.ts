@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import {
   createClient,
   RedisClientType,
@@ -7,7 +7,7 @@ import {
 } from 'redis';
 
 @Injectable()
-export class RedisService implements OnModuleInit {
+export class RedisService implements OnModuleInit, OnModuleDestroy {
   private redis: RedisClientType<RedisDefaultModules, RedisFunctions>;
   constructor() {
     this.redis = createClient({
@@ -21,6 +21,10 @@ export class RedisService implements OnModuleInit {
       console.error(error);
     });
     await this.redis.connect();
+  }
+
+  async onModuleDestroy() {
+    await this.redis.disconnect();
   }
 
   async get(key: string) {
