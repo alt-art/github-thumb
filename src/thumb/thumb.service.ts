@@ -9,7 +9,7 @@ export class ThumbService {
 
   constructor(private readonly redisService: RedisService) {}
 
-  async getThumb(url: string) {
+  async getThumb(url: string): Promise<string> {
     try {
       const cachedThumb = await this.redisService.get(`thumb:${url}`);
       if (cachedThumb) {
